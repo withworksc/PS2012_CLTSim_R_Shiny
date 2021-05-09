@@ -186,22 +186,22 @@ ui <- fluidPage(
       tabPanel("Some Statistics",
                h3("Some Statistics on the Estimator's Distribution"),
                h4("Mean:"),
-               textOutput("estMean"),
+               verbatimTextOutput("estMean"),
                h4("Variance:"),
-               textOutput("estVar"),
+               verbatimTextOutput("estVar"),
                h4("Skewness:"),
-               textOutput("estSkw"),
+               verbatimTextOutput("estSkw"),
                h4("Kurtosis:"),
-               textOutput("estKurt"),),
+               verbatimTextOutput("estKurt"),),
       
       tabPanel("Normality Check",
                h3("Testing whether the Estimator Follows Normal Distribution"),
                h4("Test Statistic of Jarque-Bera Test:"),
-               textOutput("jbstat"),
+               verbatimTextOutput("jbstat"),
                h4("p-Value in Jarque-Bera Test:"),
-               textOutput("pvalue"),
+               verbatimTextOutput("pvalue"),
                h4("Does the Estimator Follows Normal Distribution?"),
-               textOutput("cltNorm")
+               verbatimTextOutput("cltNorm")
                )
       
       )
