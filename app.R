@@ -163,7 +163,13 @@ ui <- fluidPage(
                        textInput("AnyQuantile",
                                  "Please Enter A Number Between 0 to 1",
                                  0)
-                       )
+                       ),
+      
+      helpText(
+        a(href = "https://github.com/withworksc/PS2012_CLTSim_R_Shiny", 
+          target = "_blank",
+          "View the Code on GitHub")
+        )
       
     ),
     mainPanel(
