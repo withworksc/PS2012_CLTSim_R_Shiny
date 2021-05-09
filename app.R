@@ -1,5 +1,6 @@
 library(shiny)
 library(tidyverse)
+library(moments)
 library(tseries)
 
 set.seed(123)
@@ -10,7 +11,7 @@ set.seed(123)
 
 ## Convert Input Distributiion as Integer 
 
-distStrToNum <- function (distStr){
+distStrToNum <- function (distStr) {
   if (distStr == "Uniform Distibution (0, 1)") {
     distNum <- 1
   } else if (distStr == "Normal Distribution (0, 1)") {
@@ -170,18 +171,30 @@ ui <- fluidPage(
       tabsetPanel(
       
       tabPanel("Plot", 
-               h3("Plot of the Sampling Distribution"), 
+               h3("Plot of the Estimator's (Asymptotic) Distribution"), 
                plotOutput("cltPlot"),
-               h3("Plot of the Distribution of First Sample"),
+               h3("Plot of the First Sample's Distribution"),
                plotOutput("firstSamplePlot")
                ),
       
-      tabPanel("Sampling Distribution Normality Check",
-               h4("Test Statistic in Jarque-Bera Test:"),
+      tabPanel("Some Statistics",
+               h3("Some Statistics on the Estimator's Distribution"),
+               h4("Mean:"),
+               textOutput("estMean"),
+               h4("Variance:"),
+               textOutput("estVar"),
+               h4("Skewness:"),
+               textOutput("estSkw"),
+               h4("Kurtosis:"),
+               textOutput("estKurt"),),
+      
+      tabPanel("Normality Check",
+               h3("Testing whether the Estimator Follows Normal Distribution"),
+               h4("Test Statistic of Jarque-Bera Test:"),
                textOutput("jbstat"),
                h4("p-Value in Jarque-Bera Test:"),
                textOutput("pvalue"),
-               h4("Does the Sample Statistic Follows Normal Distribution?"),
+               h4("Does the Estimator Follows Normal Distribution?"),
                textOutput("cltNorm")
                )
       
@@ -219,6 +232,62 @@ server <- function (input, output, session) {
     
   })
   
+  estMeanNum <- reactive({
+    
+    meanValue <- mean(estSample()[[2]])
+    
+    return(meanValue)
+  }) 
+  
+  estVarNum <- reactive({
+    
+    varValue <- var(estSample()[[2]])
+    
+    return(varValue)
+  })
+  
+  
+  estSkwNum <- reactive({
+    
+    skwValue <- skewness(estSample()[[2]])
+    
+    return(skwValue)
+  })
+  
+  estKurtNum <- reactive({
+    
+    kurtValue <- kurtosis(estSample()[[2]])
+    
+    return(kurtValue)
+    
+  })
+  
+  
+  jbStatNum <- reactive({
+    
+    statValueNum <- extractJbStat(estSample()[[2]])
+    
+    return(statValueNum)
+  })
+  
+  jbPValueNum <- reactive({
+    
+    pValueNum <- extractJbPvalue(estSample()[[2]])
+    
+  })
+  
+  jbIsNormal <- reactive({
+    
+    if (jbPValueNum() >= 0.05){
+      outMsg <- "Yes!"
+    } else {
+      outMsg <- "No!"
+    }
+    
+    return(outMsg)
+  })
+  
+  
   output$cltPlot <- renderPlot(
     
     ggplot() + 
@@ -230,28 +299,44 @@ server <- function (input, output, session) {
                    color = "goldenrod2", 
                    size = 0.8) +
       labs(x = "Values") + 
-      theme_bw()
+      theme_bw() +
+      theme(axis.text.x = element_text(color = "black", size = 13),
+            axis.text.y = element_text(color = "black", size  = 13),
+            axis.title.x = element_text(color = "black", size = 15),
+            axis.title.y = element_text(color = "black", size = 15))
     
   )
   
   output$firstSamplePlot <- renderPlot(
     
-    ggplot()+
+    ggplot() +
       geom_histogram(aes(estSample()[[1]], ..density..), 
                      bins = 50, 
-                     fill = "steelblue3", 
+                     fill = "limegreen", 
                      alpha = 0.5) +
       labs(x = "Values") + 
-      theme_bw()
+      theme_bw() +
+      theme(axis.text.x = element_text(color = "black", size = 13),
+            axis.text.y = element_text(color = "black", size  = 13),
+            axis.title.x = element_text(color = "black", size = 15),
+            axis.title.y = element_text(color = "black", size = 15))
     
   )
   
+  output$estMean <- renderText(estMeanNum())
   
-  output$jbstat <- renderText(extractJbStat(estSample()[[2]]))
+  output$estVar <- renderText(estVarNum())
   
-  output$pvalue <- renderText(extractJbPvalue(estSample()[[2]]))  
+  output$estSkw <- renderText(estSkwNum())
   
-  output$cltNorm <- renderText(if_else(extractJbPvalue(estSample()[[2]]) >= 0.05, "Yes", "No"))
+  output$estKurt <- renderText(estKurtNum()) 
+  
+  
+  output$jbstat <- renderText(jbStatNum())
+  
+  output$pvalue <- renderText(jbPValueNum())  
+  
+  output$cltNorm <- renderText(jbIsNormal())
   
 }
 
