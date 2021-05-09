@@ -318,7 +318,7 @@ server <- function (input, output, session) {
     ggplot() +
       geom_histogram(aes(estSample()[[1]], ..density..), 
                      bins = 50, 
-                     fill = "limegreen", 
+                     fill = "darkseagreen4", 
                      alpha = 0.5) +
       labs(x = "Values") + 
       theme_bw() +
