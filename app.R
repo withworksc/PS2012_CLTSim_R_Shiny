@@ -47,52 +47,68 @@ typeStrToNum <- function (typeStr) {
   return (typeNum)
 }
 
+## Generate Sample from Different Distribution
+
+randDist <- function (dist, n) {
+  
+  if (dist == 1) {
+    randVec <- runif(n, 0, 1)
+  } else if (dist == 2) {
+    randVec <- rnorm(n, 0, 1)
+  } else if (dist == 3) {
+    randVec <- rbeta(n, 0.5, 2)
+  } else if (dist == 4) {
+    randVec <- rbeta(n, 2, 0.5)
+  } else if (dist == 5) {
+    randVec <- rbinom(n, 1, 0.5)
+  } else if (dist == 6) {
+    randVec <- rpois(n, 6)
+  } else if (dist == 7) {
+    randVec <- rexp(n, 6)
+  } else {
+    randVec <- runif(n, 1, 100)
+  }
+  
+  return(randVec)
+  
+}
+
+## Generate Different Estimator 
+
+genEst <- function (sampleVec, stat, p) {
+  
+  if (stat == 1) {
+    estValue <- mean(sampleVec)
+  } else if (stat == 2) {
+    estValue <- median(sampleVec)
+  } else if (stat == 3){
+    estValue <- quantile(sampleVec, p)
+  }
+  
+  return(estValue)
+}
+
 ## Generating samples
 
-makeSample <- function(dist, type, n, iter, p = NULL){
+makeSample <- function (dist, type, n, iter, p = NULL){
   
   estVec <- c()
   firstVec <- c()
   i = 1
   
-  while (i != iter) {
+  for (i in 1:iter) {
     
     randVec <- c()
     estValue <- NULL
     
-    if (dist == 1) {
-      randVec <- runif(n, 0, 1)
-    } else if (dist == 2) {
-      randVec <- rnorm(n, 0, 1)
-    } else if (dist == 3) {
-      randVec <- rbeta(n, 0.5, 2)
-    } else if (dist == 4) {
-      randVec <- rbeta(n, 2, 0.5)
-    } else if (dist == 5) {
-      randVec <- rbinom(n, 1, 0.5)
-    } else if (dist == 6) {
-      randVec <- rpois(n, 6)
-    } else if (dist == 7) {
-      randVec <- rexp(n, 6)
-    } else {
-      randVec <- runif(n, 1, 100)
-    }
+    randVec <- randDist(dist, n)
+    estValue <- genEst(randVec, type, p)
+    
+    estVec[i] <- estValue
     
     if (i == 1) {
       firstVec <- randVec
     }
-    
-    if (type == 1) {
-      estValue <- mean(randVec)
-    } else if (type == 2) {
-      estValue <- median(randVec)
-    } else if (type == 3){
-      estValue <- quantile(randVec, p)
-    }
-    
-    estVec[i] <- estValue
-    
-    i <- i + 1
   }
   
   estList <- list(firstVec, estVec)
