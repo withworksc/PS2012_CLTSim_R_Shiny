@@ -112,7 +112,7 @@ makeSample <- function (dist, type, n, iter, p = NULL){
   }
   
   estList <- list(firstVec, estVec)
-
+  
   return(estList)
 }
 
@@ -158,14 +158,14 @@ ui <- fluidPage(
                               "Poisson Distribution (6)",
                               "Exponential Distribution (6)",
                               "Any Number From 1 to 100")
-                  ),
+      ),
       
       selectInput("Statistics",
                   "Please Select A Statistic Type",
                   choices = c("Mean",
                               "Median",
                               "Quantile")
-                  ),
+      ),
       
       textInput("N",
                 "Sample Number (N)",
@@ -174,52 +174,52 @@ ui <- fluidPage(
       textInput("Iter",
                 "Iterations (Iter)",
                 1000),
-
+      
       conditionalPanel(condition = "input.Statistics == 'Quantile'",
                        textInput("AnyQuantile",
                                  "Please Enter A Number Between 0 to 1",
                                  0)
-                       ),
+      ),
       
       helpText(
         a(href = "https://github.com/withworksc/PS2012_CLTSim_R_Shiny", 
           target = "_blank",
           "View the Code on GitHub")
-        )
+      )
       
     ),
     mainPanel(
       
       tabsetPanel(
-      
-      tabPanel("Plot", 
-               h3("Plot of the Estimator's (Asymptotic) Distribution"), 
-               plotOutput("cltPlot"),
-               h3("Plot of the First Sample's Distribution"),
-               plotOutput("firstSamplePlot")
-               ),
-      
-      tabPanel("Some Statistics",
-               h3("Some Statistics on the Estimator's Distribution"),
-               h4("Mean:"),
-               verbatimTextOutput("estMean"),
-               h4("Variance:"),
-               verbatimTextOutput("estVar"),
-               h4("Skewness:"),
-               verbatimTextOutput("estSkw"),
-               h4("Kurtosis:"),
-               verbatimTextOutput("estKurt"),),
-      
-      tabPanel("Normality Check",
-               h3("Testing whether the Estimator Follows Normal Distribution"),
-               h4("Test Statistic of Jarque-Bera Test:"),
-               verbatimTextOutput("jbstat"),
-               h4("p-Value in Jarque-Bera Test:"),
-               verbatimTextOutput("pvalue"),
-               h4("Does the Estimator Follows Normal Distribution?"),
-               verbatimTextOutput("cltNorm")
-               )
-      
+        
+        tabPanel("Plot", 
+                 h3("Plot of the Estimator's (Asymptotic) Distribution"), 
+                 plotOutput("cltPlot"),
+                 h3("Plot of the First Sample's Distribution"),
+                 plotOutput("firstSamplePlot")
+        ),
+        
+        tabPanel("Some Statistics",
+                 h3("Some Statistics on the Estimator's Asymptotic Distribution"),
+                 h4("Mean:"),
+                 verbatimTextOutput("estMean"),
+                 h4("Variance:"),
+                 verbatimTextOutput("estVar"),
+                 h4("Skewness:"),
+                 verbatimTextOutput("estSkw"),
+                 h4("Kurtosis:"),
+                 verbatimTextOutput("estKurt"),),
+        
+        tabPanel("Normality Check",
+                 h3("Testing Whether the Estimator Follows Normal Distribution Asymptotically"),
+                 h4("Test Statistic of Jarque-Bera Test:"),
+                 verbatimTextOutput("jbstat"),
+                 h4("P-Value in Jarque-Bera Test:"),
+                 verbatimTextOutput("pvalue"),
+                 h4("Does the Estimator Follows Normal Distribution Asymptotically?"),
+                 verbatimTextOutput("cltNorm")
+        )
+        
       )
       
     )
@@ -235,7 +235,7 @@ ui <- fluidPage(
 #####################################################################
 
 server <- function (input, output, session) {
-
+  
   estSample <- reactive({
     
     distValue <- distStrToNum(input$Distribution)
@@ -371,4 +371,3 @@ server <- function (input, output, session) {
 #####################################################################
 
 shinyApp(ui = ui, server = server)
-
